@@ -1,7 +1,10 @@
 <?php 
 namespace Src;
+use \Src\Traits\Sql;
+
 // string builder
 class Grammar{
+    use Sql;
     private string $word;
     private string $between_key_value= " = ";
     private string $betweenRaw=' , ' ;
@@ -10,38 +13,83 @@ class Grammar{
     private string $valueBetweenNotStr = '';
     private string $multiKeysOpen = '(';
     private string $multiKeysClose = ')';
+    private string $between_keys_values = ' VALUES ';
     // set vairablels construct
-    public function __construct(string $word='',string $between_key_value= " = " ,string $betweenRaw=' , ' 
-        ,string $keyBetween = '`', string $valueBetween="\"",string $valueBetweenNotStr='')
+    public function __construct(string $word=''
+        )
     {
-        $this->$between_key_value = $between_key_value;
-        $this->$betweenRaw = $betweenRaw;
-        $this->$keyBetween = $keyBetween;
-        $this->$valueBetween = $valueBetween;
-        $this->$valueBetween = $valueBetween;
         $this->word = $word;
+
+    }
+    public function setWord($word)
+    {
+        $this->word = $word ;
+        return $this;
+    }
+    public function connectWord($word)
+    {
+        $this->word .= $word ;
+        return $this;
+    }
+    public function getWord()
+    {
+        return $this->word;
     }
     // build string from array and but some strings between and 
     // return str 
-    public function arrayConnect(array $array)
+    public function arrayConnect(array $array ,$betweenRaw = " , "
+    ,string $betweenBefore= '`' ,string $betweenAfter='`',
+    string $betweenValueBefore='"',string $betweenValueAfter='"')
     {
         foreach ($array as $key=>$value)
         {     
-            $this->word .= $this->keyBetween . $key . $this->keyBetween . $this->between_key_value . $this->valueBetween($value) . $this->betweenRaw;
+            $this->word .= $this->valueBetween($key,$betweenBefore,$betweenAfter);
+            $this->word .=   $this->valueBetween($value,$betweenValueBefore,$betweenValueAfter) ;
+            $this->word .= $betweenRaw;
         }
-        $this->word = substr($this->word,0 , 0-strlen($this->betweenRaw));   
-        return $this->word;
+        $this->word = $this->substrLeft($this->betweenRaw);   
+        return $this;
     }
-    public function arrayConnectMulti(array $keys,array $values
-    ,string $multiKeysOpen = $this->multiKeysOpen , string $multiKeysClose = $this->multiKeysClose)
+    // build string from first array , second array ,
+    // but some strings between and 
+    // return str 
+    public function arrayConnectMulti(
+        array $keys
+        ,array $values
+        ,string $between_keys_values = ' VALUES '
+        ,string $betweenValueBefore= '"'
+        ,string $betweenValueAfter= '"'
+        ,string $betweenKeyeBefore= '`'
+        ,string $betweenKeyAfter= '`'
+        ,string $betweenValueAndKeyAfterSubLest= ' , '
+        ,string $multiKeysOpen = '(' 
+        ,string $multiKeysClose = ')'
+        ,string $multiValuesOpen ='(' 
+        ,string $multiValuesClose = ')')
     {
         $this->word .= $multiKeysOpen ;
-        $this->word .= $this->arrayBetween($keys);
+        $this->word .= $this->arrayBetween($keys,$betweenKeyeBefore,$betweenKeyeBefore.$betweenValueAndKeyAfterSubLest);
+        $this->word = $this->substrLeft($betweenValueAndKeyAfterSubLest);
         $this->word .= $multiKeysClose;
-        return $this->word;
+        $this->word .= $between_keys_values;
+        $this->word .= $multiValuesOpen;
+        $this->word .= $this->arrayBetween($values,$betweenValueBefore,$betweenValueAfter.$betweenValueAndKeyAfterSubLest);
+        $this->word = $this->substrLeft($betweenValueAndKeyAfterSubLest);
+        $this->word .= $multiValuesClose;
+
+        return $this;
+    }
+    public function __call($name, $arguments)
+    {
+        if(array_key_exists($name,$this->StarterWord) || $this->word !=''){
+            $this->word .= $this->StarterWord[$name];
+            return $this;
+        }
+        $error = $this->word =="" ? "word is't not empty":"no function $name";
+        throw $error;
     }
     // but keys array between str and return str
-    public function arrayBetween(array $values,$between_before = $this->betweenRaw , $between_after = $between_before)
+    private function arrayBetween(array $values,string $between_before = '`' ,string $between_after = '`')
     {
         $word = '';
         foreach ($values as $value)
@@ -51,13 +99,29 @@ class Grammar{
         return $word;
     }
     // return difrence values which type change
-    private function valueBetween($v,string $betweenBefore= $this->valueBetween ,string $betweenAfter=$betweenBefore)
+    private function valueBetween($v,string $betweenBefore= '`' ,string $betweenAfter='`')
     {
         if(is_string($v))
         {
-            return $this->valueBetween . $v . $this->valueBetween;            
+            return $betweenBefore . $v . $betweenAfter;            
         }
         return $this->valueBetweenNotStr . $v . $this->valueBetweenNotStr;  
+    }
+    // cut string count char between raw 
+    private function substrLeft($betweenRaw)
+    {
+        $ofSet = null;
+        // length if string
+        if(is_string($betweenRaw)){
+            $ofSet = 0 - strlen($betweenRaw);   
+        }elseif(is_int($betweenRaw)){
+            $ofSet = 0- $betweenRaw;
+        }
+        if(!$ofSet){
+            throw "must be integer or string";
+        }  
+        return substr($this->word,0 , $ofSet) ;
+        
     }
 
 }

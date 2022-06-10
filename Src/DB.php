@@ -15,7 +15,19 @@ class DB {
             "email"=>"magdy@m.com",
             "password"=>123456
         ];
-        $word = $grammar->arrayConnect($array);
+        $array2 = [
+            "magdy",
+            "magdy@m.com",
+            123456
+        ];
+        $keys = [
+            'user',
+            "email",
+            "password"
+        ];
+        
+        $word = $grammar->setWord('')->arrayConnectMulti($keys,$array2)->getWord();
         return $word;
     }
+
 } 
