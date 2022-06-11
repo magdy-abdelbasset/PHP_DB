@@ -50,6 +50,7 @@ class Grammar{
         $this->word = $this->substrLeft($this->betweenRaw);   
         return $this;
     }
+    
     // build string from first array , second array ,
     // but some strings between and 
     // return str 
@@ -59,7 +60,7 @@ class Grammar{
         ,string $between_keys_values = ' VALUES '
         ,string $betweenValueBefore= '"'
         ,string $betweenValueAfter= '"'
-        ,string $betweenKeyeBefore= '`'
+        ,string $betweenKeyBefore= '`'
         ,string $betweenKeyAfter= '`'
         ,string $betweenValueAndKeyAfterSubLest= ' , '
         ,string $multiKeysOpen = '(' 
@@ -68,7 +69,7 @@ class Grammar{
         ,string $multiValuesClose = ')')
     {
         $this->word .= $multiKeysOpen ;
-        $this->word .= $this->arrayBetween($keys,$betweenKeyeBefore,$betweenKeyeBefore.$betweenValueAndKeyAfterSubLest);
+        $this->word .= $this->arrayBetween($keys,$betweenKeyBefore,$betweenKeyAfter.$betweenValueAndKeyAfterSubLest);
         $this->word = $this->substrLeft($betweenValueAndKeyAfterSubLest);
         $this->word .= $multiKeysClose;
         $this->word .= $between_keys_values;
@@ -79,6 +80,31 @@ class Grammar{
 
         return $this;
     }
+    // connect , duplicate array and return as string but some words between values
+    public function arrayConnectDuplicate(array $array ,$replaceIt=null,$betweenValues = " VALUES "
+    ,string $betweenBefore= '`' ,string $betweenAfter='`',string $betweenBeforeFirst = '(',
+    string $betweenAfterFirst = ')',string $betweenBeforeSecond = '(',
+    string $betweenAfterSecond = ')',string $betweenWord = ' , ',
+    string $betweenBefore2=':',string $betweenAfter2='')
+    {
+        $this->word .= $betweenBeforeFirst;
+        $this->word .= $this->arrayBetween($array,$betweenBefore,$betweenAfter.$betweenWord);
+        $this->word = $this->substrLeft($betweenWord);
+        $this->word .= $betweenAfterFirst;
+        $this->word .= $betweenValues;
+        $this->word .= $betweenBeforeSecond;        
+        if($replaceIt){
+            $output = array_map(function ($val) use ($replaceIt) { return $replaceIt; }, $array);
+
+        }else{
+            $output = $array ;
+        }
+        $this->word .= $this->arrayBetween($output,$betweenBefore2,$betweenAfter2.$betweenWord);
+        $this->word = $this->substrLeft($betweenWord);
+        $this->word .= $betweenAfterSecond;
+        return $this;
+    }
+    
     public function __call($name, $arguments)
     {
         if(array_key_exists($name,$this->StarterWord) || $this->word !=''){
