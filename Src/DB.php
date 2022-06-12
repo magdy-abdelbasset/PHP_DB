@@ -1,33 +1,21 @@
 <?php
-// define connection details and
-// error log and development or production 
 namespace Src;
+use Src\Traits\CSRF;
+use Src\Traits\Search;
+use Src\Traits\Display;
+use Src\Interfaces\DB as DBInterface;
+use Src\Traits\Init;
 
-use Src\Grammar;
+class DB extends Query  implements DBInterface{
+    use CSRF ,Search ,Display,Init;
 
-class DB {
-    
-    public function insert()
+    public function __construct()
     {
-        $grammar = new Grammar();
-        $array = [
-            'user'=>"magdy",
-            "email"=>"magdy@m.com",
-            "password"=>123456
-        ];
-        $array2 = [
-            "magdy",
-            "magdy@m.com",
-            123456
-        ];
-        $keys = [
-            'user',
-            "email",
-            "password"
-        ];
-        
-        $word = $grammar->setWord('')->arrayConnectMulti($keys,$array2)->getWord();
-        return $word;
+        if(!parent::getConnect()){
+            parent::init();   
+        }
+        $this->__init();
     }
+     // fake "extends C" using magic function
 
 } 

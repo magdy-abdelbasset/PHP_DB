@@ -1,10 +1,9 @@
 <?php 
 namespace Src;
-use \Src\Traits\Sql;
+
 
 // string builder
 class Grammar{
-    use Sql;
     private string $word;
     private string $between_key_value= " = ";
     private string $betweenRaw=' , ' ;
@@ -24,6 +23,11 @@ class Grammar{
     public function setWord($word)
     {
         $this->word = $word ;
+        return $this;
+    }
+    public function add($word)
+    {
+        $this->word .= $word ;
         return $this;
     }
     public function connectWord($word)
@@ -107,8 +111,8 @@ class Grammar{
     
     public function __call($name, $arguments)
     {
-        if(array_key_exists($name,$this->StarterWord) || $this->word !=''){
-            $this->word .= $this->StarterWord[$name];
+        if(array_key_exists($name,STARTER_WORD) ){
+            $this->word .= STARTER_WORD[$name];
             return $this;
         }
         $error = $this->word =="" ? "word is't not empty":"no function $name";
@@ -123,6 +127,16 @@ class Grammar{
             $word .= $this->valueBetween($value , $between_before,$between_after);
         }
         return $word;
+    }
+    public function arrayBetweenSub(array $values,string $between_before = '`'
+     ,string $between_after = '`',string $subStr=' , ')
+    {
+        foreach ($values as $value)
+        {     
+            $this->word .= $this->valueBetween($value , $between_before,$between_after.$subStr);
+        }
+        $this->word = $this->substrLeft($subStr);
+        return $this;
     }
     // return difrence values which type change
     private function valueBetween($v,string $betweenBefore= '`' ,string $betweenAfter='`')

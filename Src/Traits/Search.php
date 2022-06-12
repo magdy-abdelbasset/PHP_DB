@@ -1,9 +1,8 @@
 <?php
-namespace Src;
+namespace Src\Traits;
+// use Src\Interfaces\Search as InterfacesSearch;
 
-use Src\Interfaces\Search as InterfacesSearch;
-
-class Search implements InterfacesSearch{
+trait Search {
     public function where(string $column,$orator="=" ,$value)
     {
         

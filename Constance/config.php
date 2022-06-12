@@ -1,4 +1,5 @@
 <?php
+
 define('ROOT', dirname(__DIR__).'/PHP_DB');
 define('SLASH', DIRECTORY_SEPARATOR);
 

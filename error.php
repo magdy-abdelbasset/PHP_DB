@@ -1,11 +1,11 @@
 <?php
-require_once('handler-wep.php');
+require_once('./handler-web.php');
 if (defined('ENVIRONMENT'))
 {
     switch (ENVIRONMENT)
     {
         case 'DEVELOPMENT':
-            $base_url = 'http://localhost/product/';
+            // $base_url = 'http://localhost/product/';
             ini_set('display_errors', 1);
             ini_set('display_startup_errors', 1);
             error_reporting(E_ALL|E_STRICT);
@@ -15,7 +15,7 @@ if (defined('ENVIRONMENT'))
             break;
 
         case 'PRODUCTION':
-            $base_url = 'Production URL'; /* https://google.com */
+            // $base_url = 'Production URL'; /* https://google.com */
             error_reporting(0);
             /* Mechanism to log errors */
             break;

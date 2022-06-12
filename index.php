@@ -1,4 +1,5 @@
 <?php require_once('./autoload.php');  ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +9,8 @@
     <title>Document</title>
 </head>
 <body>
-    <?php $db = new Src\DB;echo $db->insert();?>
+    <?php $db = new Src\DB();
+    print_r($db->table('users')->all());
+    ?>
 </body>
 </html>

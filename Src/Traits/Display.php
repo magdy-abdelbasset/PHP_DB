@@ -1,12 +1,11 @@
 <?php
-namespace Src;
-
-use Src\Interfaces\Display as InterfacesDisplay;
-
-class Display implements InterfacesDisplay{
+namespace Src\Traits;
+// use Src\Interfaces\Display as InterfacesDisplay;
+trait Display {
+    
     public function all(): array
     {
-        return [];   
+        return $this->run();
     }
     public function get(): array
     {
