@@ -1,7 +1,7 @@
 <?php
-require_once('./Constance/config.php');
-require_once('./Constance/Sql.php');
-require_once('./error.php');
+require_once('./Src/Constance/config.php');
+require_once('./Src/Constance/Sql.php');
+require_once('./Src/handler/error.php');
 class Autoloader
 {
     public static function register()

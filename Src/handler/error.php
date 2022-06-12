@@ -1,5 +1,5 @@
 <?php
-require_once('./handler-web.php');
+require_once(__DIR__.'/handler-web.php');
 if (defined('ENVIRONMENT'))
 {
     switch (ENVIRONMENT)
