@@ -23,7 +23,8 @@ class Connect
     {
         throw new Exception("can't create new object from Connect class");
     }
-    public  function init(string $connect_type = 'pdo',string $host = '127.0.0.1:3306' , string $password = '', string $username = 'root', string $dbname = 'gy')
+    public  function init(string $connect_type = DB_CONNECT,string $host = DB_HOST . ':' . DB_PORT, string $password = DB_PASSWORD, string $username = DB_USER, string $dbname = DB_NAME)
+    // (string $connect_type = 'pdo',string $host = '127.0.0.1:3306' , string $password = '', string $username = 'root', string $dbname = 'gy')
     {
         // string $connect_type = DB_CONNECT,string $host = DB_HOST . ':' . DB_PORT, string $password = DB_PASSWORD, string $username = DB_USER, string $dbname = DB_NAME
         

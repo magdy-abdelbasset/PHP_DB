@@ -15,7 +15,7 @@ function EXC_HANDLER($exception){
 
 function shutDownFunction() {
     $error = error_get_last();
-    if(is_array($error)){
+    if(is_array($error)){// if no any error
         if ($error["type"] == 1) {
             ERR_HANDLER($error["type"], $error["message"], $error["file"], $error["line"]);
         }
