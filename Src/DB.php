@@ -11,9 +11,7 @@ class DB extends Query  implements DBInterface{
 
     public function __construct()
     {
-        if(!parent::getConnect()){
-            parent::init();   
-        }
+
         $this->__init();
     }
      // fake "extends C" using magic function

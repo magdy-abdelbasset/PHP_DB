@@ -3,7 +3,7 @@
 define('ROOT', dirname(__DIR__).'/PHP_DB');
 define('SLASH', DIRECTORY_SEPARATOR);
 
-define('DB_NAME','gy');
+define('DB_NAME','nauma');
 define('DB_HOST','127.0.0.1');
 define('DB_PORT','3306');
 define('DB_PASSWORD','');

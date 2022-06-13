@@ -2,20 +2,27 @@
 namespace Src\Traits;
 
 use Src\Interfaces\CSRF as InterfacesCSRF;
-
+use Src\Connect;
 trait CSRF {
     use Init;
     public $select = false;
-    public function insert(array $columns, ?array $values)
+    public function insert(array $columnsValues,$values=null)
     {
-        $this->sql = $this->sql->insert()->arr;
+        $this->sqlGrammar->insert();
+        $this->startSql();
+        $this->statement($columnsValues);
+        return $this;
     }
     public function delete()
     {
+        $this->sqlGrammar->insert();
+        $this->startSql();
         $this->sqlGrammar = $this->sqlGrammar->delete();   
     }
     public function update(array $values)
     {
+        $this->sqlGrammar->insert();
+        $this->startSql();
         $this->sqlGrammar = $this->sqlGrammar ; 
     }
     public function select(array $columns)

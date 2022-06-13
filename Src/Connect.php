@@ -54,17 +54,16 @@ class Connect
         if(self::$connect){
             self::closeConnection();
         }
-        // switch (self::$connect_type) {
-        //     case 'pdo':
+        switch (self::$connect_type) {
+            case 'pdo':
                     self::$connect = new \PDO('mysql:host=' . self::$host . ';dbname=' . self::$dbname, self::$username, self::$password);           
-                
-            //      break;
-            // default:
-            //     throw new Exception("sorry ,we support pdo only");
-            //     exit;
-        // }
+                 break;
+            default:
+                throw new Exception("sorry ,we support pdo only");
+                exit;
+        }
     }
-    private  function closeConnection()
+    protected  function closeConnection()
     {
         switch (self::$connect_type) {
             case 'pdo':

@@ -10,7 +10,11 @@
 </head>
 <body>
     <?php $db = new Src\DB();
-    print_r($db->table('users')->all());
+    // $db->setColumns(["id","email","password"]);
+    print_r($db->table('tags')->insert([
+        // "id"=>"2",
+        "name"=>"test",
+        "name_ar"=>"test_ar"]));
     ?>
 </body>
 </html>

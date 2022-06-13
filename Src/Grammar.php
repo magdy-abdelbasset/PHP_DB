@@ -5,14 +5,8 @@ namespace Src;
 // string builder
 class Grammar{
     private string $word;
-    private string $between_key_value= " = ";
     private string $betweenRaw=' , ' ;
-    private string $keyBetween = '`';
-    private string $valueBetween="\"";
     private string $valueBetweenNotStr = '';
-    private string $multiKeysOpen = '(';
-    private string $multiKeysClose = ')';
-    private string $between_keys_values = ' VALUES ';
     // set vairablels construct
     public function __construct(string $word=''
         )
@@ -25,9 +19,12 @@ class Grammar{
         $this->word = $word ;
         return $this;
     }
-    public function add($word)
+    public function add($word,string $between='`',bool $numNotBetween = true)
     {
-        $this->word .= $word ;
+        if(!is_string($word) && $numNotBetween){
+            $between = '';
+        }
+        $this->word .= $between.$word.$between ;
         return $this;
     }
     public function connectWord($word)
@@ -85,11 +82,19 @@ class Grammar{
         return $this;
     }
     // connect , duplicate array and return as string but some words between values
-    public function arrayConnectDuplicate(array $array ,$replaceIt=null,$betweenValues = " VALUES "
-    ,string $betweenBefore= '`' ,string $betweenAfter='`',string $betweenBeforeFirst = '(',
-    string $betweenAfterFirst = ')',string $betweenBeforeSecond = '(',
-    string $betweenAfterSecond = ')',string $betweenWord = ' , ',
-    string $betweenBefore2=':',string $betweenAfter2='')
+    public function arrayConnectDuplicate(
+    array $array ,
+    $replaceIt=null,
+    string $betweenValues = " VALUES ",
+    string $betweenBefore= '`' ,
+    string $betweenAfter='`',
+    string $betweenBeforeFirst = '(',
+    string $betweenAfterFirst = ')',
+    string $betweenBeforeSecond = '(',
+    string $betweenAfterSecond = ')',
+    string $betweenWord = ' , ',
+    string $betweenBefore2=':',
+    string $betweenAfter2='')
     {
         $this->word .= $betweenBeforeFirst;
         $this->word .= $this->arrayBetween($array,$betweenBefore,$betweenAfter.$betweenWord);
@@ -108,7 +113,38 @@ class Grammar{
         $this->word .= $betweenAfterSecond;
         return $this;
     }
+    public function arrayConnectDuplicateKeys(
+        array $array ,
+        $replaceIt=null,
+        string $betweenValues = " VALUES ",
+        string $betweenBefore= '`' ,
+        string $betweenAfter='`',
+        string $betweenBeforeFirst = '(',
+        string $betweenAfterFirst = ')',
+        string $betweenBeforeSecond = '(',
+        string $betweenAfterSecond = ')',
+        string $betweenWord = ' , ',
+        string $betweenBefore2=':',
+        string $betweenAfter2='')
+        {
+            $this->word .= $betweenBeforeFirst;
+            $this->word .= $this->arrayBetweenKey($array,$betweenBefore,$betweenAfter.$betweenWord);
+            $this->word = $this->substrLeft($betweenWord);
+            $this->word .= $betweenAfterFirst;
+            $this->word .= $betweenValues;
+            $this->word .= $betweenBeforeSecond;        
+            if($replaceIt){
+                $output = array_map(function ($val) use ($replaceIt) { return $replaceIt; }, $array);
     
+            }else{
+                $output = $array ;
+            }
+            $this->word .= $this->arrayBetweenKey($output,$betweenBefore2,$betweenAfter2.$betweenWord);
+            $this->word = $this->substrLeft($betweenWord);
+            $this->word .= $betweenAfterSecond;
+            return $this;
+        }
+    // call to static word and connect with syntax  
     public function __call($name, $arguments)
     {
         if(array_key_exists($name,STARTER_WORD) ){
@@ -121,6 +157,7 @@ class Grammar{
     // but keys array between str and return str
     private function arrayBetween(array $values,string $between_before = '`' ,string $between_after = '`')
     {
+        
         $word = '';
         foreach ($values as $value)
         {     
@@ -128,12 +165,25 @@ class Grammar{
         }
         return $word;
     }
-    public function arrayBetweenSub(array $values,string $between_before = '`'
-     ,string $between_after = '`',string $subStr=' , ')
+    private function arrayBetweenKey(array $values,string $between_before = '`' ,string $between_after = '`')
     {
-        foreach ($values as $value)
+        
+        $word = '';
+        foreach ($values as $key=>$v)
         {     
-            $this->word .= $this->valueBetween($value , $between_before,$between_after.$subStr);
+            $word .= $this->valueBetween($key , $between_before,$between_after);
+        }
+        return $word;
+    }
+    // value between str1 , str2 and in middle but str
+    // chang syntax  
+    public function arrayBetweenSub(array $values,string $between_before = '`'
+     ,string $between_after = '`',string $subStr=' , ',$replaceIt = null)
+    {
+
+        foreach ($values as $value)
+        {   $v = $replaceIt ?? $value;  
+            $this->word .= $this->valueBetween($v , $between_before,$between_after.$subStr);
         }
         $this->word = $this->substrLeft($subStr);
         return $this;
