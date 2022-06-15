@@ -5,29 +5,38 @@ use Src\Interfaces\CSRF as InterfacesCSRF;
 use Src\Connect;
 trait CSRF {
     use Init;
-    public $select = false;
+    protected $lastSql;
     public function insert(array $columnsValues,$values=null)
     {
-        $this->sqlGrammar->insert();
-        $this->startSql();
+        // set insert sql syn
+        $this->addTable();
+        $this->sqlGrammar->insert(true);
         $this->statement($columnsValues);
         return $this;
     }
     public function delete()
     {
-        $this->sqlGrammar->insert();
-        $this->startSql();
-        $this->sqlGrammar = $this->sqlGrammar->delete();   
+        $this->lastSql = $this->sqlGrammar->getWord();
+        $this->sqlGrammar->setWord('');
+        $this->addTable();
+        $this->sqlGrammar->delete(true);
+        $this->statement([],2);
+        return $this; 
     }
-    public function update(array $values)
+    public function update(array $columnsValues ,$values=null)
     {
-        $this->sqlGrammar->insert();
-        $this->startSql();
-        $this->sqlGrammar = $this->sqlGrammar ; 
+        $this->lastSql = $this->sqlGrammar->getWord();
+        $this->sqlGrammar->setWord('');
+        $this->sqlGrammar->set(true);
+        $this->addTable();
+        $this->sqlGrammar->update(true);
+        $this->statement($columnsValues,1);
+        return $this; 
     }
     public function select(array $columns)
     {
-        $select = true ;
+        $this->selectColumns =$columns ;
+        return $this;
         // $this->sqlGrammar = $this->sqlGrammar->select()->arrayBetweenSub($columns);
     }
     

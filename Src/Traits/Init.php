@@ -8,7 +8,8 @@ trait Init {
     private $table ;
     private $primaryKey = 'id';
     // default columns in DB table
-    private array $columns;
+    private  $columns=null;
+    private $selectColumns=null;
     public function __init()
     {
         $this->select = false;
@@ -22,18 +23,46 @@ trait Init {
         $this->table = $table;
         return $this;
     }
-    private function startSql(){
-        if($this->sqlGrammar->getWord() == ''){
-            if(!empty($this->columns))
+    private function addTable(){
+        // if($this->sqlGrammar->getWord() == ''){
+            // add before sql syntax
+            $this->sqlGrammar->add($this->table,before:true);
+            // if(!empty($this->columns))
+            // {
+            //     // add before sql syntax
+            //     $this->sqlGrammar->arrayBetweenSub($this->columns);
+            // }
+            // else
+            // {
+                // add before sql syntax
+            //  $this ->sqlGrammar ->add(" * ", )
+                // $this->sqlGrammar->selectAll(true);
+            // }
+        // }
+        
+
+        return $this;
+    }
+    private function addColumns(){
+            // add before sql syntax
+            if(!empty($this->columns) || !empty($this->selectColumns))
             {
-                $this->sqlGrammar->select()->arrayBetweenSub($this->columns)->from();
+                if(!empty($this->selectColumns)){
+                    $this->sqlGrammar->arrayBetweenSub($this->selectColumns,'','',before:true);
+                }else{
+
+                // add before sql syntax
+                    $this->sqlGrammar->arrayBetweenSub($this->columns,before:true);
+                }
             }
             else
             {
-                $this->sqlGrammar->selectAll();
+                // add before sql syntax
+                $this ->sqlGrammar ->add(" * ",before:true );
+                // $this->sqlGrammar->selectAll(true);
             }
-        }
-        $this->sqlGrammar->add($this->table);
+        // }
+        
 
         return $this;
     }

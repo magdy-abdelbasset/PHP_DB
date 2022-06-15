@@ -6,6 +6,7 @@ trait Search {
     private string $column ;
     private  $operator ;
     private $value ;
+    private $whereSyntax;
     use Helper;
 
     public function where(string $column,$operator='=' ,$value=null)
@@ -15,7 +16,7 @@ trait Search {
         $this->column = $column;
         $this->operator = $operator;
         $this->value = $value;
-        $this->startSql();
+        // $this->startSql();
         $this->runWhere('and');
 
         return $this;
@@ -35,7 +36,7 @@ trait Search {
         $this->column = $column;
         $this->operator = $operator;
         $this->value = $value;
-        $this->startSql();
+        // $this->startSql();
         $this->runWhere('or');
     }
     public function whereNotIn(string $column ,array $values)

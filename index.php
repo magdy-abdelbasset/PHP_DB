@@ -11,10 +11,14 @@
 <body>
     <?php $db = new Src\DB();
     // $db->setColumns(["id","email","password"]);
-    print_r($db->table('tags')->insert([
-        // "id"=>"2",
-        "name"=>"test",
-        "name_ar"=>"test_ar"]));
+    print_r($db->table('tags')->select(['`id` as sgdd'])->get());
     ?>
+    <?php
+    /* $db = new Src\DB();
+    // $db->setColumns(["id","email","password"]);
+    print_r($db->table('tags')->where("id",'=',2)->update([
+        "name"=>"test",
+        "name_ar"=>"test_ar_update"]));
+    */?>
 </body>
 </html>

@@ -1,6 +1,7 @@
 <?php 
 namespace Src;
 
+use Exception;
 
 // string builder
 class Grammar{
@@ -19,14 +20,20 @@ class Grammar{
         $this->word = $word ;
         return $this;
     }
-    public function add($word,string $between='`',bool $numNotBetween = true)
+    public function add($word,string $between='`',bool $numNotBetween = true,bool $before = false)
     {
         if(!is_string($word) && $numNotBetween){
             $between = '';
         }
-        $this->word .= $between.$word.$between ;
+        if($before){
+            $this->word = $between.$word.$between . $this->word ;
+
+        }else{
+            $this->word .= $between.$word.$between ;
+        }
         return $this;
     }
+    
     public function connectWord($word)
     {
         $this->word .= $word ;
@@ -144,15 +151,46 @@ class Grammar{
             $this->word .= $betweenAfterSecond;
             return $this;
         }
+        public function arrayDuplicateKeys(
+            array $array ,
+            string $betweenBefore= '`' ,
+            string $betweenAfter='`',
+            string $betweenWord = ' , ',
+            string $betweenBefore2=':',
+            string $betweenAfter2='',
+            string $betweenKeys = ' = ',bool $before=false)
+            {
+                foreach ($array as $key=>$v)
+                {     
+                    $this->word .= $betweenBefore.$key.$betweenAfter.$betweenKeys.$betweenBefore2.$key.$betweenAfter2.$betweenWord;   
+                }
+                $this->word = $this->substrLeft($betweenWord);
+                return $this;
+            }
+            private function checkBefore(string $syntax,bool $before)
+            {
+                if($before){
+                    $this->word = $syntax .$this->word;
+                    return;
+                }
+                $this->word .= $syntax;
+
+
+            }
     // call to static word and connect with syntax  
     public function __call($name, $arguments)
     {
         if(array_key_exists($name,STARTER_WORD) ){
-            $this->word .= STARTER_WORD[$name];
+            if(isset($arguments[0])){
+                $this->word = STARTER_WORD[$name].$this->word;  
+            }else{
+                $this->word .= STARTER_WORD[$name];
+            }
             return $this;
         }
         $error = $this->word =="" ? "word is't not empty":"no function $name";
-        throw $error;
+        throw new Exception($error);
+
     }
     // but keys array between str and return str
     private function arrayBetween(array $values,string $between_before = '`' ,string $between_after = '`')
@@ -175,16 +213,23 @@ class Grammar{
         }
         return $word;
     }
+    
     // value between str1 , str2 and in middle but str
     // chang syntax  
     public function arrayBetweenSub(array $values,string $between_before = '`'
-     ,string $between_after = '`',string $subStr=' , ',$replaceIt = null)
+     ,string $between_after = '`',string $subStr=' , ',$replaceIt = null,$before=false)
     {
-
+        $word ='';
         foreach ($values as $value)
-        {   $v = $replaceIt ?? $value;  
-            $this->word .= $this->valueBetween($v , $between_before,$between_after.$subStr);
+        {   
+            $v = $replaceIt ?? $value;  
+            $word .= $this->valueBetween($v , $between_before,$between_after.$subStr);
         }
+        if($before){
+            $this->word = $this->substrLeft($subStr,$word).$this->word;
+            return $this ;
+        }
+        $this->word .= $word;
         $this->word = $this->substrLeft($subStr);
         return $this;
     }
@@ -198,7 +243,7 @@ class Grammar{
         return $this->valueBetweenNotStr . $v . $this->valueBetweenNotStr;  
     }
     // cut string count char between raw 
-    private function substrLeft($betweenRaw)
+    private function substrLeft($betweenRaw,$word=null)
     {
         $ofSet = null;
         // length if string
@@ -209,6 +254,9 @@ class Grammar{
         }
         if(!$ofSet){
             throw "must be integer or string";
+        }
+        if($word){
+            return substr($word,0 , $ofSet) ;
         }  
         return substr($this->word,0 , $ofSet) ;
         

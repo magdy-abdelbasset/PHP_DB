@@ -39,7 +39,7 @@ class Query  extends Connect
                 YOUR SQL IS  >>>>>  " . $this->sqlGrammar->getWord());
         }
     }
-    protected function statement(array $fields)
+    protected function statement(array $fields,int $type =0)
     {
 
         try {
@@ -48,8 +48,14 @@ class Query  extends Connect
             }
             $sql_word = $sql_word ?? $this->sqlGrammar->getWord();
             if (Connect::type() == 'pdo') {
-                $this->sqlGrammar->arrayConnectDuplicateKeys(array: $fields);
-
+                if($type==0){
+                    $this->sqlGrammar->arrayConnectDuplicateKeys(array: $fields);
+                }elseif($type==1){
+                    
+                    $this->sqlGrammar->arrayDuplicateKeys($fields)->add($this->lastSql,'');
+                }elseif($type ==2){
+                    $this->sqlGrammar->add($this->lastSql,'');
+                }
                 $stmt = parent::getConnect()->prepare($this->sqlGrammar->getWord());
                 foreach ($fields as $Name => &$Value) {
                     $stmt->bindParam(':' . $Name, $Value, PDO::PARAM_STR);
