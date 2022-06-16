@@ -58,7 +58,7 @@ trait Init {
             else
             {
                 // add before sql syntax
-                $this ->sqlGrammar ->add(" * ",before:true );
+                $this ->sqlGrammar ->add(" * ",'',before:true );
                 // $this->sqlGrammar->selectAll(true);
             }
         // }
