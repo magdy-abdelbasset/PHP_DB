@@ -10,7 +10,6 @@ class Connect
     // 
     private static  string $connect_type;
     // query sql
-    private static string $sql;
     // save host and connect type  
     // will use when change dbname
     private static string $host;
