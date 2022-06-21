@@ -6,27 +6,21 @@
         $first = false;
         $array_f = [];
         foreach ($data as $k => $val) {
-    ?>
-            <?php if (!empty($val) && is_array($val)) {
-                foreach ($val as $k => $v) {
 
+            if (!empty($val) && is_array($val)) {
+                foreach ($val as $k => $v) {
                     if ($rows == 0) {
                         if ($columns == 1) {
                             echo '<tr>';
                         }
-            ?>
-                        <th>
-                            <?php echo ($k);
-                            ?></th>
-
-
+    ?>
+                        <th><?php echo ($k); ?></th>
                         <?php
                         if ($columns == count($val)) {
                             echo '</tr>';
-                            $columns =1;
-                            foreach ($val as  $k2=>$v2) {
-
-                                if ($columns == 1 ) {
+                            $columns = 1;
+                            foreach ($val as  $k2 => $v2) {
+                                if ($columns == 1) {
                                     echo '<tr>';
                                 } ?>
                                 <td><?php echo ($v2); ?></td>
@@ -37,25 +31,21 @@
                             }
                         }
                     } else {
-
                         if ($columns == 1) {
                             echo '<tr>';
                         } ?>
                         <td><?php echo ($v); ?></td>
-                    <?php if ($columns == count($val)) {
+    <?php if ($columns == count($val)) {
                             echo '</tr>';
                         }
-                    } ?>
-
-            <?php
-
+                    }
                     $columns++;
                 }
                 $columns = 1;
-            } ?>
+            }
 
 
-    <?php $rows++;
+            $rows++;
         }
     }
     ?>

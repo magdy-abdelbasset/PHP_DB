@@ -14,7 +14,9 @@ const STARTER_WORD = [
     "leftJoin"=> " LEFT JOIN  ",
     "rightJoin" => " RIGHT JOIN  ",
     "fullJoin" => " FULL OUTER JOIN ",
-    "fff"=>"uion orderby groupBy having count sum in between  avg",
+    'orderBy' => " ORDER BY ",
+    'groupBy' => " GROUP BY ",
+    "fff"=>"uion orderby groupBy having in between ",
     "on" => " ON "
 ];
 const CONNECT_TYPE = [

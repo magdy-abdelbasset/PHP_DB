@@ -10,11 +10,13 @@ trait Init {
     // default columns in DB table
     private  $columns=null;
     private $selectColumns=null;
+    private $keysNotBetween=null;
     public function __init()
     {
         $this->select = false;
         // new for syntax builder
         $this->sqlGrammar = new Grammar();
+        
     }
     // select table if empty will build 
     // syntax to select all
@@ -43,7 +45,7 @@ trait Init {
 
         return $this;
     }
-    private function addColumns(){
+    private function addColumns($between='`'){
             // add before sql syntax
             if(!empty($this->columns) || !empty($this->selectColumns))
             {
@@ -52,7 +54,7 @@ trait Init {
                 }else{
 
                 // add before sql syntax
-                    $this->sqlGrammar->arrayBetweenSub($this->columns,before:true);
+                    $this->sqlGrammar->arrayBetweenSub($this->columns,$between,$between,before:true);
                 }
             }
             else

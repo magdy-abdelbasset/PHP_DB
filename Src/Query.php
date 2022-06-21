@@ -20,25 +20,36 @@ class Query  extends Connect
     //  PDO::exec() - Execute an SQL statement and return the number of affected rows
     // PDO::prepare() - Prepares a statement for execution and returns a statement object
     // PDOStatement::execute() - Executes a prepared statement
+    
+    
+    // Get data
     public function run($sql = null)
     {
         try {
             if (!parent::getConnect()) {
+                // connect database
                 parent::init();
             }
             if ($sql) {
+
                 $this->sqlGrammar->add($sql, '', '');
             }
             if (parent::type() == 'pdo') {
                 $statement =  parent::getConnect()->query($this->sqlGrammar->getWord(), PDO::FETCH_ASSOC);
                 return $statement->fetchAll(PDO::FETCH_ASSOC);
             }
+ 
             parent::closeConnection();
+            $this->resetDefaultValues();
+
         } catch (\PDOException $e) {
+            $w = $this->sqlGrammar->getWord();
+            $this->resetDefaultValues();
             throw new PDOException("ERROR PDO MESSAGE :" . $e . "</br> 
-                YOUR SQL IS  >>>>>  " . $this->sqlGrammar->getWord());
+                YOUR SQL IS  >>>>>  " . $w );
         }
     }
+    // SET DATA
     protected function statement(array $fields,int $type =0)
     {
 
@@ -61,11 +72,20 @@ class Query  extends Connect
                     $stmt->bindParam(':' . $Name, $Value, PDO::PARAM_STR);
                 }
                 $stmt->execute();
+                $this->resetDefaultValues();
+
             }
         } catch (\PDOException $e) {
+            $w = $this->sqlGrammar->getWord();
+            $this->resetDefaultValues();
             throw new PDOException("ERROR PDO MESSAGE :" . $e . "</br> 
-            YOUR SQL IS  >>>>>  " . $this->sqlGrammar->getWord());
+            YOUR SQL IS  >>>>>  " . $w);
         }
         parent::closeConnection();
+    }
+    private function resetDefaultValues(){
+        $this->firstOrderBy = true;
+        $this->firstWhere = true;
+        $this->sqlGrammar->setWord('');
     }
 }

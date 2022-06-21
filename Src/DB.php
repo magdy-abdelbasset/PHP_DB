@@ -4,10 +4,12 @@ use Src\Traits\CSRF;
 use Src\Traits\Search;
 use Src\Traits\Display;
 use Src\Interfaces\DB as DBInterface;
+use Src\Traits\DisplayQuery;
 use Src\Traits\Init;
+use Src\Traits\Relationship;
 
 class DB extends Query  implements DBInterface{
-    use CSRF ,Search ,Display,Init;
+    use CSRF ,Search ,Display,Init,DisplayQuery,Relationship;
 
     public function __construct()
     {

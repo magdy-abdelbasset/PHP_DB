@@ -13,12 +13,11 @@
 
 <body>
     <?php $db = new Src\DB();
-    // $db->setColumns(["id","email","password"]);
-
-    $data = $db->table('tags')->get(true);
+    // $db->setColumns(["id","name"]);
+    $data = $db->table('users')->leftJoin('rooms','users.id = rooms.room_owner')->get();
     print_r($data);
     ?>
-    <?php include("./Views/table.php"); ?>
+    <?php include("./Views/auto-table.php"); ?>
     <?php
     /* $db = new Src\DB();
     // $db->setColumns(["id","email","password"]);

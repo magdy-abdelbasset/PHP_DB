@@ -13,13 +13,7 @@ trait Display
         $this->addSelectData();
         return $this->run();
     }
-    private function addSelectData()
-    {
-        $this->addTable();
-        $this->sqlGrammar->from(true);
-        $this->addColumns();
-        $this->sqlGrammar->select(true);
-    }
+
     public function get(): array
     {
         $this->addSelectData();
@@ -42,5 +36,49 @@ trait Display
             return $data[0];
         }
         return $this;
+    }
+    public function count($values = null, $Get = true)
+    {
+        return $this->calcDataQuery('COUNT(', $values, $Get);
+    }
+    public function avg($values = null, $Get = true)
+    {
+        return $this->calcDataQuery('AVG(', $values, $Get);
+    }
+    public function sum($values = null, $Get = true)
+    {
+        return $this->calcDataQuery('SUM(', $values, $Get);
+    }
+    public function min($values = null, $Get = true)
+    {
+        return $this->calcDataQuery('MIN(', $values, $Get);
+    }
+    public function max($values = null, $Get = true)
+    {
+        return $this->calcDataQuery('MAX(', $values, $Get);
+    }
+    private function calcDataQuery($before, $values, $Get)
+    {
+        // if ($this->columns) {
+            // $this->sqlGrammar->appendStrArray($this->columns, $before, ')', $values);
+        // } els
+        if (!$this->selectColumns) {
+            $this->selectColumns = [];
+        }
+           array_push($this->selectColumns,...$values); 
+            $this->sqlGrammar->appendStrArray($this->selectColumns, $before, ')', $values);
+
+        if ($Get) {
+            $this->addSelectData('');
+            return $this->run();
+        }
+        return $this;
+    }
+    private function addSelectData($between = '`')
+    {
+        $this->addTable();
+        $this->sqlGrammar->from(true);
+        $this->addColumns($between);
+        $this->sqlGrammar->select(true);
     }
 }

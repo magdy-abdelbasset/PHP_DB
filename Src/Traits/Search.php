@@ -7,6 +7,7 @@ trait Search {
     private  $operator ;
     private $value ;
     private $whereSyntax;
+    protected $firstWhere = true;
     use Helper;
 
     public function where(string $column,$operator='=' ,$value=null)
@@ -45,9 +46,11 @@ trait Search {
     }
     private function runWhere($op = 'and')
     {
-        if(!strpos($this->sqlGrammar->getWord(),STARTER_WORD["where"]) ){
+        if(!$this->firstWhere ){
+            $this->firstWhere = false;
             $this->sqlGrammar->where()->add($this->column)->add($this->operator.' ','')->add($this->value,'"');
         }else{
+            
             $this->sqlGrammar->$op()->add($this->column)->add($this->operator.' ','')->add($this->value,'"');
         };
     }
